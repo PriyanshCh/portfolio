@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case study | Priyansh Chauhan</title>
+<meta name="description" content="Project case study by Priyansh Chauhan.">
+<meta name="theme-color" content="#07080d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307080d'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' font-family='monospace' font-weight='700' fill='%23c6ff3d'%3EPC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+.cs{max-width:820px;margin:0 auto;padding:110px 20px 60px;position:relative;z-index:1}
+.cs h1{font-size:clamp(38px,7vw,72px);margin:8px 0 14px}
+.cs .lead{max-width:none}
+.cs h2{font-size:clamp(22px,3vw,28px);margin:44px 0 14px}
+.cs h2::before{content:"// ";color:var(--lime);font-family:"Space Mono"}
+.cs ul{padding-left:20px;color:var(--dim);display:grid;gap:10px;font-size:16.5px}
+.cs ul b{color:var(--text);font-weight:500}
+.cs p{color:var(--dim);font-size:16.5px}
+.cs .mstats b{font-size:30px}
+.next{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:56px;padding-top:24px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="glow g1"></div><div class="glow g2"></div>
+<nav aria-label="Primary">
+  <a href="index.html#work">&larr; all work</a>
+  <a href="index.html#experience" class="hide-m">experience</a>
+  <a href="index.html#contact">contact</a>
+  <span class="sep"></span>
+  <button class="tool" id="themeBtn" aria-label="Toggle light and dark theme">&#9680;</button>
+</nav>
+<main class="cs" id="cs"></main>
+<footer class="mono">&copy; <span id="yr"></span> Priyansh Chauhan</footer>
+<script src="data.js?v=3"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+$("#yr").textContent = new Date().getFullYear();
+$("#themeBtn").addEventListener("click", () => {
+  const t = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem("theme", t); } catch {}
+});
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  $("#progress").style.width = (h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)) * 100 + "%";
+}, { passive: true });
+
+const id = new URLSearchParams(location.search).get("id");
+const idx = Math.max(0, PROJECTS.findIndex((p) => p.id === id));
+const p = PROJECTS[idx], d = p.detail, nxt = PROJECTS[(idx + 1) % PROJECTS.length];
+const list = (a) => `<ul>${a.map((x) => `<li>${x}</li>`).join("")}</ul>`;
+document.title = `${p.name} | Priyansh Chauhan`;
+$("#cs").innerHTML = `
+  <span class="label mono">${p.work ? "work @ " + p.work : "personal project"} · ${p.tags.filter((t) => t !== "work").join(" · ")}</span>
+  <h1>${p.name}</h1>
+  <p class="lead">${p.blurb}</p>
+  <div class="cta" style="margin-top:20px">
+    ${p.repo ? `<a class="btn p" href="${p.repo}" target="_blank" rel="noopener">Source code &rarr;</a>` : ""}
+    ${p.live ? `<a class="btn" href="${p.live}" target="_blank" rel="noopener">Live demo</a>` : ""}
+  </div>
+  ${d.metrics ? `<div class="mstats" style="margin-top:34px">${d.metrics.map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join("")}</div>` : ""}
+  <h2>The problem</h2><p>${d.problem}</p>
+  <h2>What I built</h2>${list(d.built)}
+  ${d.decisions.length ? `<h2>Decisions &amp; lessons</h2>${list(d.decisions)}` : ""}
+  ${d.table ? `<h2>Services</h2><div class="card" style="padding:8px 16px;overflow-x:auto"><table><tr><th>Service</th><th>Tech</th><th>Port</th></tr>${d.table.map((r) => `<tr>${r.map((c) => `<td class="mono">${c}</td>`).join("")}</tr>`).join("")}</table></div>` : ""}
+  <h2>Stack</h2><div>${p.stack.map((s) => `<span class="tag">${s}</span>`).join("")}</div>
+  <div class="next">
+    <a class="btn" href="index.html#work">&larr; All projects</a>
+    <a class="btn p" href="case.html?id=${nxt.id}">Next: ${nxt.name} &rarr;</a>
+  </div>`;
+</script>
+</body>
+</html>
